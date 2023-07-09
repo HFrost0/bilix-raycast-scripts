@@ -32,11 +32,14 @@ on run
         end tell
 
         -- Save HTML to file
-        set filePath to "~/videos/tmp.html"
-        do shell script "echo " & quoted form of pageHTML & " > " & filePath
+        set filePath to (path to home folder as text) & "videos:tmp.html"
+        set fileRef to open for access file filePath with write permission
+        set eof of fileRef to 0
+        write pageHTML to fileRef as «class utf8»
+        close access fileRef
 
         -- Run bilix command
-        set bilixCommand to "bilix autov " & quoted form of currentURL & " --path ~/videos --html-strategy file --html-path " & filePath
+        set bilixCommand to "bilix autov " & quoted form of currentURL & " --path ~/videos --html-strategy file --html-path " & quoted form of POSIX path of filePath
         tell application "iTerm"
             activate
             if (exists current window) then
